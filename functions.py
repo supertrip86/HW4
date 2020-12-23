@@ -24,7 +24,7 @@ def new_text(text, stop_words):
     
     for word in words:
        
-        if word.lower() not in stop_words and word.isalpha() and word.lower()!='br':
+        if word.lower() not in stop_words and word.isalpha() and word.lower()!='br': #br is an html tag
             
             filtered_words.append(lemmatizer.lemmatize(word.lower()))
     
@@ -33,13 +33,13 @@ def new_text(text, stop_words):
 
 def take_adj(lista):
     
-    items=nltk.pos_tag(lista)
+    items=nltk.pos_tag(lista).   # here it is cretaed a speech tag for all the words in the list
     
     adj_list=[]
     
     for item in items:
         
-        if item[1]=="JJ":
+        if item[1]=="JJ":    ## JJ stays for adjective 
             
             adj_list.append(item[0])
    
@@ -48,13 +48,13 @@ def take_adj(lista):
 
 def take_names(lista):
     
-    items=nltk.pos_tag(lista)
+    items=nltk.pos_tag(lista).   # here it is cretaed a speech tag for all the words in the list
     
     nn_list=[]
     
     for item in items:
         
-        if item[1]=="NN":
+        if item[1]=="NN":    ## NN stays for noun
             
             nn_list.append(item[0])
    
@@ -92,7 +92,9 @@ def df_words_dict(list_agg,all_adjectives):
     return d_adj
 
 
-def variance_columns(df_adjectives,number_cluster):
+
+def variance_columns(df_adjectives,number_cluster):     # this function is used to retain the columns with more variance
+    
     
     var_dict={}
 
@@ -116,48 +118,48 @@ def variance_columns(df_adjectives,number_cluster):
 
 
 
-
+#the following function will be used for our k-means implementation
 
 def cluster_labels(word_vector, iterations, cluster_number):
 
     
     
-    centers= random.sample(word_vector,cluster_number)
+    centers= random.sample(word_vector,cluster_number).   # here the initial centers are choosen at random.
     
     
-    for i in range(0,iterations):
+    for i in range(0,iterations):         # the algorithm is repeated for n iterations
  
    
     
-        label_vector=[]
+        label_vector=[]      # a list to store the cluster for each item
     
     
-        for vector in word_vector:
+        for vector in word_vector:    
     
         
-            distances=[]
+            distances=[] 
         
-        
+            
     
-            for center in centers:
+            for center in centers:     # in this cycle for each element is computed the distances with the centers
     
                
-                dist=distance.euclidean(center,vector)
+                dist=distance.euclidean(center,vector)    
              
                 
                 distances.append(dist)
             
             
             
-            label_vector.append(np.argmin(distances))
+            label_vector.append(np.argmin(distances))   # as label is added the minimum distance index
         
         
-        print(f'cluster labels for iteration {i} for the first 100 items are {label_vector[0:100]}')
+        print(f'cluster labels for iteration {i} for the first 100 items are {label_vector[0:100]}')   # bonus question: dispaling the iteration process
         
-        for k in range(cluster_number):
+        for k in range(cluster_number):      # in this cycle the centers are updated
     
             
-            cluster_sum=np.zeros(len(word_vector[0]))
+            cluster_sum=np.zeros(len(word_vector[0]))      
     
             cluster_count=0
     
@@ -175,7 +177,7 @@ def cluster_labels(word_vector, iterations, cluster_number):
             
         
             
-            if cluster_count!=0:
+            if cluster_count!=0:     # in this case the center value is updated, otherwise the center stays the same
         
                 centers[k]=(cluster_sum/cluster_count)
                 
@@ -249,6 +251,8 @@ def unique_users(df, number_cluster):
 
     return series_users
 
+#this function provides mean difference significancy between the dataset scores and the scores for each cluster
+
 def mean_difference_main(alpha,means,stds,dataset,df_count):
 
     test=[]
@@ -266,9 +270,7 @@ def mean_difference_main(alpha,means,stds,dataset,df_count):
     for i in range(14):
 
     
-    
-    
-        t_test=list(ttest(means[i],stds[i],df_count[i],mean_dataset,std_dataset,len(dataset)))
+        t_test=list(ttest(means[i],stds[i],df_count[i],mean_dataset,std_dataset,len(dataset))).  #t-test for the mean difference
         
         test.append(t_test)
         
@@ -288,6 +290,7 @@ def mean_difference_main(alpha,means,stds,dataset,df_count):
     
     return df_stat
 
+# this function provides mean difference significancy among each combination of cluster scores
 
 def mean_difference(alpha,means,stds,df_count):
 
