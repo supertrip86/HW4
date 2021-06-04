@@ -1,4 +1,4 @@
-# Homework 4 - Hard Coding
+# Homework 4
 
 ### Group 22 - Eugenio Baldo, Giovanni Giunta, Leonardo Masci
 
